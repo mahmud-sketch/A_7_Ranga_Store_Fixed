@@ -11,6 +11,16 @@ const showProducts = (products) => {
   const allProducts = products.map((pd) => pd);
   for (const product of allProducts) {
     const image = product.image;
+
+    // making title smaller if product.title.length > 40
+    let titleToSmaller, titleToBigger;
+    if (product.title.length > 40) {
+      titleToSmaller = product.title;
+      titleToBigger = '';
+    } else {
+      titleToBigger = product.title;
+      titleToSmaller = '';
+    }
     const div = document.createElement("div");
     div.classList.add("product");
     div.innerHTML =
@@ -18,11 +28,12 @@ const showProducts = (products) => {
         <div>
           <img class="product-image" src=${image}></img>
         </div>
-        <h3>${product.title}</h3>
+        <h3>${titleToBigger}</h3>
+        <h4>${titleToSmaller}</h4>
         <p>Category: ${product.category}</p>
-        <h2>Price: $ ${product.price}</h2>
-        <button onclick="addToCart(${product.id},${product.price})" id="addToCart-btn" class="buy-now btn btn-success">add to cart</button>
-        <button id="details-btn" class="btn btn-danger">Details</button>
+        <h3>Price: $ ${product.price}</h3>
+        <button onclick="addToCart(${product.id},${product.price})" id="addToCart-btn" class="buy-now btn btn-primary">add to cart</button>
+        <button id="details-btn" class="btn btn-info" onclick="showDetailsModal(${product.id})">Details</button>
         <p>Average Rating ${product.rating.rate}</p>
         <p>Rated by ${product.rating.count} person</p>
       </div>
@@ -89,3 +100,19 @@ const updateTotal = () => {
     getInputValue("total-tax");
   document.getElementById("total").innerText = parseFloat(grandTotal.toFixed(2));
 };
+
+
+// get details form API basing on product id
+const showDetailsModal = id => {
+  const url = `https://fakestoreapi.com/products/${id}`;
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => showModal(data));
+
+}
+
+// console log a single product by id
+const showModal = data => {
+  console.log(data.category);
+}
+
